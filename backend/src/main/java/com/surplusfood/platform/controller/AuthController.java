@@ -22,9 +22,6 @@ public class AuthController {
         User user = userService.findOrCreateByFirebaseUid("demo-firebase-uid", request.email());
         user.setName(request.name());
         user.setPhone(request.phone());
-        if (request.role() != null && !request.role().isBlank()) {
-            user.setRole(User.Role.valueOf(request.role().toUpperCase()));
-        }
-        return ApiResponse.success(user, "Profile synced");
+                return ApiResponse.success(user, "Profile synced");
     }
 }
