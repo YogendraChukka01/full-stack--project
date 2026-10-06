@@ -9,3 +9,8 @@ target/
 **/bin/
 **/build/
 **/.gradle/
+**/node_modules/
+**/dist/
+**/target/
+.env
+**/.env

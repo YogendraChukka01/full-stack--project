@@ -1,95 +1,48 @@
-# Surplus Food Platform Backend Starter
+# NourishLink
 
-This repository contains a Spring Boot 3 starter aligned to the backend PRD for the surplus food donation platform.
+NourishLink is a full-stack surplus food donation platform. The frontend is a React, TypeScript, and Vite application; the backend is a Java 17 and Spring Boot REST API.
 
-## Included
-
-- Java 17 + Spring Boot 3 project setup
-- Firebase-ready security wiring with optional local bootstrap
-- JPA user and organization entities
-- Haversine distance utility for donor/NGO proximity logic
-- Basic health endpoint and test coverage
-
-## Ordered backend architecture
+## Project Layout
 
 ```text
-src/main/java/com/surplusfood/platform/
-├── SurplusFoodPlatformApplication.java
-├── config/
-│   ├── FirebaseConfig.java
-│   └── SecurityConfig.java
-├── controller/
-│   ├── AuthController.java
-│   ├── AdminController.java
-│   ├── ClaimController.java
-│   ├── DonationController.java
-│   ├── HealthController.java
-│   ├── ImpactController.java
-│   ├── NotificationController.java
-│   ├── OrganizationController.java
-│   └── UserController.java
-├── domain/
-│   ├── ClaimStatus.java
-│   └── DonationStatus.java
-├── dto/
-│   ├── ApiResponse.java
-│   ├── CreateDonationRequest.java
-│   ├── DonationResponse.java
-│   └── UserProfileRequest.java
-├── exception/
-│   ├── ApiExceptionHandler.java
-│   └── ResourceNotFoundException.java
-├── filter/
-│   └── JwtAuthFilter.java
-├── model/
-│   ├── Claim.java
-│   ├── Donation.java
-│   ├── EventEntity.java
-│   ├── ImpactMetric.java
-│   ├── NotificationEntity.java
-│   ├── Organization.java
-│   └── User.java
-├── repository/
-│   ├── ClaimRepository.java
-│   ├── DonationRepository.java
-│   ├── EventRepository.java
-│   ├── ImpactMetricRepository.java
-│   ├── OrganizationRepository.java
-│   └── UserRepository.java
-├── service/
-│   ├── ClaimService.java
-│   ├── DonationMatchingService.java
-│   ├── DonationService.java
-│   ├── ImpactService.java
-│   ├── NotificationService.java
-│   ├── OrganizationService.java
-│   └── UserService.java
-├── util/
-│   └── LocationUtils.java
-└── resources/
-    ├── application.properties
-    └── db/
-        └── schema-postgres.sql
+backend/      Spring Boot application, REST API, persistence, and tests
+frontend/     React application and typed API client
+docs/         Product requirements and project specifications
 ```
 
-## Run locally
+The frontend API client is in `frontend/src/api`. It calls the backend's `/api` endpoints. In development, Vite proxies those requests to Spring Boot.
+
+## Local Development
+
+Prerequisites: Java 17, Maven, and Node.js 22 or newer.
+
+Start the backend with development fixtures and the in-memory H2 database:
 
 ```bash
-mvn test
-mvn spring-boot:run
+cd backend
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-## Firebase setup
+In a second terminal, configure and start the frontend:
 
-To enable Firebase-backed auth, add:
-
-```properties
-app.firebase.enabled=true
-FIREBASE_SERVICE_ACCOUNT_JSON=/absolute/path/to/serviceAccount.json
+```bash
+cd frontend
+cp .env.example .env
+npm install
+npm run dev
 ```
 
-You can also place a service account JSON file at `src/main/resources/firebase-service-account.json`.
+Open <http://localhost:3000>. The development profile creates donor organization ID `1`, NGO organization ID `2`, and one available sample donation. The frontend environment file uses those organization IDs by default.
 
-## Default local mode
+Run checks from the repository root:
 
-The app starts without Firebase credentials by default so the backend can be built and tested locally. The JWT filter automatically skips authentication when Firebase is not configured.
+```bash
+mvn -f backend/pom.xml test
+cd frontend && npm run lint && npm run build
+```
+
+## Production Configuration
+
+Authentication is required by default. Configure Firebase Admin credentials, set `app.firebase.enabled=true`, and provide `APP_CORS_ALLOWED_ORIGINS` for the deployed frontend origin. Do not enable the `dev` Spring profile or expose its unauthenticated API access in production.
+
+Product requirements are in [docs/backend-prd.md](docs/backend-prd.md) and [docs/frontend-prd.md](docs/frontend-prd.md).

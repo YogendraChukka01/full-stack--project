@@ -1,0 +1,6 @@
+{
+  "name": "NourishLink - Surplus Food Donation Platform",
+  "description": "Real-time surplus food rescue connecting donors, NGOs, volunteer couriers, and verified shelters to eliminate food waste.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
