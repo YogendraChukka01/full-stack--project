@@ -5,10 +5,11 @@ import com.surplusfood.platform.dto.UserProfileRequest;
 import com.surplusfood.platform.model.User;
 import com.surplusfood.platform.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -17,11 +18,20 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @PostMapping("/public/auth/sync-profile")
-    public ApiResponse<User> syncProfile(@Valid @RequestBody UserProfileRequest request) {
-        User user = userService.findOrCreateByFirebaseUid("demo-firebase-uid", request.email());
+    @PostMapping("/sync-profile")
+    public ApiResponse<User> syncProfile(
+            Authentication authentication,
+            @Valid @RequestBody UserProfileRequest request) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("Authenticated Firebase user is required");
+        }
+
+        String firebaseUid = authentication.getName();
+        User user = userService.findOrCreateByFirebaseUid(firebaseUid, request.email());
         user.setName(request.name());
         user.setPhone(request.phone());
-                return ApiResponse.success(user, "Profile synced");
+
+        return ApiResponse.success(user, "Profile synced");
     }
 }
