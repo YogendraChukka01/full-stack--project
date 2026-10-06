@@ -6,7 +6,7 @@ import com.surplusfood.platform.service.ClaimService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class ClaimController {
 
     private final ClaimService claimService;
