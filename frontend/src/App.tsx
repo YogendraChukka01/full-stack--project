@@ -66,7 +66,21 @@ export default function App() {
     message: '',
   });
 
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking');
+
+  const checkBackend = async () => {
+    setBackendStatus('checking');
+    try {
+      const response = await fetch('/api/public/health', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Health check failed');
+      setBackendStatus('online');
+    } catch {
+      setBackendStatus('offline');
+    }
+  };
+
   useEffect(() => {
+    checkBackend();
     let isCurrent = true;
     getDonations()
       .then((records) => {
