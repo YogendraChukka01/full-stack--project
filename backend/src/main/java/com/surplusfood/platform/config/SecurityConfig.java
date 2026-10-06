@@ -55,8 +55,8 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/actuator/health", "/actuator/info", "/api/public/**").permitAll();
-                    auth.requestMatchers("/api/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers("/actuator/health", "/actuator/info", "/api/v1/public/**").permitAll();
+                    auth.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
                     if (authenticationRequired) {
                         auth.anyRequest().authenticated();
                     } else {
