@@ -47,3 +47,28 @@ cd frontend && npm run lint && npm run build
 Authentication is required by default. Configure Firebase Admin credentials, set `app.firebase.enabled=true`, and provide `APP_CORS_ALLOWED_ORIGINS` for the deployed frontend origin. Do not enable the `dev` Spring profile or expose its unauthenticated API access in production.
 
 Product requirements are in [docs/backend-prd.md](docs/backend-prd.md) and [docs/frontend-prd.md](docs/frontend-prd.md).
+
+## Full-Stack Architecture
+
+- Frontend: React 19 + TypeScript + Vite + Tailwind CSS
+- Backend: Java 17 + Spring Boot 3 + Spring Web + Spring Data JPA + Hibernate
+- Database: PostgreSQL in production; H2 is available for local development fixtures
+- Authentication: Spring Security with Firebase Admin integration
+- API style: REST under `/api`
+
+## Core API
+
+```text
+GET    /api/public/health
+GET    /api/donations
+GET    /api/donations/{id}
+POST   /api/donations?donorOrgId={id}
+DELETE /api/donations/{id}
+POST   /api/claims?donationId={id}&ngoOrgId={id}
+```
+
+The frontend proxies `/api` to the Spring Boot server in development. Keep secrets and production Firebase credentials outside the repository.
+
+## Recommended Build Flow
+
+PRD → UI/UX → database schema → REST contract → backend → API testing → frontend integration → authentication → validation/error states → tests → deployment.
